@@ -1,0 +1,40 @@
+syntax = "proto3";
+package echoserver;
+
+import "google/api/annotations.proto";
+
+
+option go_package="module github.com/aniruddha/grpc-websocket-proxy/echoserver";
+
+message EchoRequest {
+  bytes message = 1;
+}
+
+message EchoResponse {
+  string  message = 1;
+}
+
+message Heartbeat {
+  enum Status {
+    UNKNOWN = 0;
+    OK = 1;
+  }
+  Status status = 1;
+}
+
+message Empty {}
+
+service EchoService {
+  rpc Echo(stream EchoRequest) returns (stream EchoResponse) {
+    option (google.api.http) = {get: "/echo1"};
+  }
+  rpc Stream(stream EchoRequest) returns (stream EchoResponse) {
+    option (google.api.http) = {get: "/echo"};
+  }
+  rpc Heartbeats(stream Empty) returns (stream Heartbeat) {
+    option (google.api.http) = {get: "/heartbeats"};
+  }
+  rpc Sample(EchoRequest) returns (Empty) {
+    option (google.api.http) = {get: "/sample"};
+  }
+}
